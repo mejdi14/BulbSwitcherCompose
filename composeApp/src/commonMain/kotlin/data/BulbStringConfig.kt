@@ -1,9 +1,12 @@
 package data
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 
 data class BulbStringConfig(
+    val initialLightState: MutableState<Boolean> = mutableStateOf(false),
     val initialTouchPosition: Offset = Offset(100f, 100f),
     val bulbCenterX: Float = 100f,
     val initialYOffset: Float = 100f,
@@ -24,6 +27,6 @@ data class BulbStringConfig(
     val touchThreshold: Float = 50f,
     val strokeWidth: Float = 3f,
     val circleRadius: Float = 4f,
-    val lineColor: Color = Color.Black,
-    val circleColor: Color = Color.Black
+    val lineColor: Color = if(initialLightState.value) Color.Black else Color(0xFFcdd1d3),
+    val circleColor: Color = if(initialLightState.value) Color.Black else Color(0xFFcdd1d3)
 )

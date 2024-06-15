@@ -13,7 +13,7 @@
                 android:translateY="24.9399">
             <path
                 android:name="path22"
-                android:fillColor="#ffd983"
+                android:fillColor="#364950"
                 android:strokeWidth="1"
                 android:pathData="M 0,0 c 0,-6.439 -5,-7.439 -5,-13.44 0,-3.098 -3.123,-3.359 -5.5,-3.359 -2.053,0 -6.586,0.779 -6.586,3.361 0,5.999 -4.914,6.999 -4.914,13.438 0,6.031 5.285,10.92 11.083,10.92 C -5.117,10.92 0,6.031 0,0" />
         </group>
@@ -33,7 +33,7 @@
                 android:translateY="25.707">
             <path
                 android:name="path30"
-                android:fillColor="#ffcc4d"
+                android:fillColor="#cdd1d3"
                 android:strokeWidth="1"
                 android:pathData="M 0,0 C -0.391,0.391 -1.023,0.391 -1.414,0 L -4.707,-3.293 -8,0 c -0.391,0.391 -1.023,0.391 -1.414,0 -0.391,-0.391 -0.391,-1.023 0,-1.414 l 3.707,-3.707 0,-10.586 c 0,-0.553 0.448,-1 1,-1 0.552,0 1,0.447 1,1 l 0,10.586 L 0,-1.414 C 0.391,-1.023 0.391,-0.391 0,0" />
         </group>

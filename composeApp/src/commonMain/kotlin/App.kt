@@ -11,6 +11,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.Spacer
@@ -20,17 +21,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import bulbswitchercompose.composeapp.generated.resources.Res
-import bulbswitchercompose.composeapp.generated.resources.bulb_switcher
-import bulbswitchercompose.composeapp.generated.resources.compose_multiplatform
-import bulbswitchercompose.composeapp.generated.resources.tim
+import bulbswitchercompose.composeapp.generated.resources.bulb_switcher_off
+import bulbswitchercompose.composeapp.generated.resources.bulb_switcher_on
 
 import data.BulbStringConfig
 import data.BulbSwitcherActionListener
@@ -44,12 +42,10 @@ import kotlin.math.sin
 @Composable
 @Preview
 fun App() {
-    val viewModel : ThemeViewModel = ThemeViewModel()
-    val isDarkTheme = viewModel.isDarkTheme.collectAsState().value
     val isDark = remember { mutableStateOf(false) }
 
     AppTheme(darkTheme = isDark.value) {
-        BulbSwitcher(listener = object : BulbSwitcherActionListener{
+        BulbSwitcher(listener = object : BulbSwitcherActionListener {
             override fun onPull(position: Offset) {
                 // when you start pulling the string
             }
@@ -62,14 +58,20 @@ fun App() {
             override fun onEndRelease() {
             }
 
+            override fun onClickListener() {
+                isDark.value = !isDark.value
+            }
+
         }, modifier = Modifier.background(color = MaterialTheme.colors.background))
     }
 }
 
 @Composable
-private fun BulbSwitcher(config: BulbStringConfig = BulbStringConfig(),
-                         listener: BulbSwitcherActionListener,
-                         modifier: Modifier = Modifier) {
+private fun BulbSwitcher(
+    config: BulbStringConfig = BulbStringConfig(),
+    listener: BulbSwitcherActionListener,
+    modifier: Modifier = Modifier
+) {
     var touchPosition by remember { mutableStateOf(config.initialTouchPosition) }
     var isTouching by remember { mutableStateOf(false) }
     val bulbCenterX = remember { config.bulbCenterX }
@@ -120,12 +122,15 @@ private fun BulbSwitcher(config: BulbStringConfig = BulbStringConfig(),
         ) {
             Spacer(Modifier.height(20.dp))
             Image(
-                painterResource(Res.drawable.tim),
+                painterResource(if (config.initialLightState.value) Res.drawable.bulb_switcher_on else Res.drawable.bulb_switcher_off),
                 contentDescription = null,
                 modifier = Modifier.graphicsLayer {
                     rotationZ = 180f
                     translationX = -30f
                     translationY = 4f
+                }.clickable {
+                    config.initialLightState.value = !config.initialLightState.value
+                    listener.onClickListener()
                 }
             )
             Canvas(modifier = Modifier.weight(1f).size(width = 100.dp, height = 50.dp)
@@ -133,14 +138,18 @@ private fun BulbSwitcher(config: BulbStringConfig = BulbStringConfig(),
                     forEachGesture {
                         awaitPointerEventScope {
                             val down = awaitFirstDown(requireUnconsumed = false)
-                            if (abs(down.position.x - endPoint.value.x) <= config.touchThreshold && abs(down.position.y - endPoint.value.y) <= config.touchThreshold) {
+                            if (abs(down.position.x - endPoint.value.x) <= config.touchThreshold && abs(
+                                    down.position.y - endPoint.value.y
+                                ) <= config.touchThreshold
+                            ) {
                                 touchPosition = down.position
                                 isTouching = true
                                 do {
                                     val event = awaitPointerEvent()
                                     touchPosition = event.changes.first().position
                                 } while (event.changes.any { it.pressed })
-                                    listener.onRelease(touchPosition)
+                                listener.onRelease(touchPosition)
+                                config.initialLightState.value = !config.initialLightState.value
                                 isTouching = false
                             }
                         }
@@ -174,8 +183,9 @@ private fun BulbSwitcher(config: BulbStringConfig = BulbStringConfig(),
             }
         }
         Column {
-            Box(modifier = Modifier.width(200.dp).height(90.dp),
-                )
+            Box(
+                modifier = Modifier.width(200.dp).height(90.dp),
+            )
         }
     }
 }
