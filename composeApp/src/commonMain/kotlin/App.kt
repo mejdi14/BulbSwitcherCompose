@@ -14,6 +14,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.forEachGesture
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -72,6 +73,7 @@ private fun BulbSwitcher(
     listener: BulbSwitcherActionListener,
     modifier: Modifier = Modifier
 ) {
+    val bulbState = remember { mutableStateOf(config.initialLightState.value) }
     var touchPosition by remember { mutableStateOf(config.initialTouchPosition) }
     var isTouching by remember { mutableStateOf(false) }
     val bulbCenterX = remember { config.bulbCenterX }
@@ -122,14 +124,16 @@ private fun BulbSwitcher(
         ) {
             Spacer(Modifier.height(20.dp))
             Image(
-                painterResource(if (config.initialLightState.value) Res.drawable.bulb_switcher_on else Res.drawable.bulb_switcher_off),
+                painterResource(if (bulbState.value) Res.drawable.bulb_switcher_on else Res.drawable.bulb_switcher_off),
                 contentDescription = null,
                 modifier = Modifier.graphicsLayer {
                     rotationZ = 180f
                     translationX = -30f
                     translationY = 4f
-                }.clickable {
-                    config.initialLightState.value = !config.initialLightState.value
+                }.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                            indication = null) {
+                    bulbState.value = !bulbState.value
                     listener.onClickListener()
                 }
             )
@@ -149,7 +153,7 @@ private fun BulbSwitcher(
                                     touchPosition = event.changes.first().position
                                 } while (event.changes.any { it.pressed })
                                 listener.onRelease(touchPosition)
-                                config.initialLightState.value = !config.initialLightState.value
+                                bulbState.value = !bulbState.value
                                 isTouching = false
                             }
                         }

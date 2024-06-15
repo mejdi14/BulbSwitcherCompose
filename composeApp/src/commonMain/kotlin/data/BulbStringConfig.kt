@@ -27,6 +27,6 @@ data class BulbStringConfig(
     val touchThreshold: Float = 50f,
     val strokeWidth: Float = 3f,
     val circleRadius: Float = 4f,
-    val lineColor: Color = if(initialLightState.value) Color.Black else Color(0xFFcdd1d3),
-    val circleColor: Color = if(initialLightState.value) Color.Black else Color(0xFFcdd1d3)
+    val lineColor: Color = Color(0xFFcdd1d3),
+    val circleColor: Color = Color(0xFFcdd1d3)
 )
