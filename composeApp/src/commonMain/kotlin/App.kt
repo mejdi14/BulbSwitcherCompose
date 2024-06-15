@@ -1,5 +1,6 @@
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -17,10 +18,15 @@ import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -46,6 +52,7 @@ fun App() {
     val isDark = remember { mutableStateOf(false) }
 
     AppTheme(darkTheme = isDark.value) {
+
         BulbSwitcher(listener = object : BulbSwitcherActionListener {
             override fun onPull(position: Offset) {
                 // when you start pulling the string
@@ -64,6 +71,24 @@ fun App() {
             }
 
         }, modifier = Modifier.background(color = MaterialTheme.colors.background))
+        Box(modifier = Modifier.fillMaxSize().padding(horizontal = 100.dp).padding(top = 200.dp)) {
+            Column (horizontalAlignment = Alignment.CenterHorizontally){
+                Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry." +
+                        " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s," +
+                        " when an unknown printer took a galley of type and scrambled it to make a type specimen book." +
+                        " It has survived not only five centuries, but also the leap into electronic typesetting," +
+                        " remaining essentially unchanged." +
+                        " It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages," +
+                        " and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.", color = MaterialTheme.colors.primary)
+                Spacer(Modifier.height(100.dp))
+                Box(Modifier.clip(shape =
+                    RoundedCornerShape(15.dp)
+                ).background(color = MaterialTheme.colors.primary).height(60.dp).width(140.dp)){
+                    Text("Button", Modifier.align(Alignment.Center), color = MaterialTheme.colors.secondary)
+                }
+
+            }
+        }
     }
 }
 
@@ -132,7 +157,8 @@ private fun BulbSwitcher(
                     translationY = 4f
                 }.clickable(
                     interactionSource = remember { MutableInteractionSource() },
-                            indication = null) {
+                    indication = null
+                ) {
                     bulbState.value = !bulbState.value
                     listener.onClickListener()
                 }
