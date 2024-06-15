@@ -63,6 +63,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
